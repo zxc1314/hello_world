@@ -1,5 +1,15 @@
+<<<<<<< HEAD
 ﻿git config --global credential.helper 
 
 ������
 
 测试aaa
+=======
+﻿git config --global credential.helper store
+axaxax
+3165166
+asasasassaasas
+你你您你你
+������
+
+>>>>>>> 70ac3c56e3d3ea8a5a0b5b1bdadbdd61130bb21f
