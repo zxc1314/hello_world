@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajax</title>
+   	<link rel="stylesheet" href="">
+</head>
+<body>
+	<h3 class="title">表格233</h3>
+	<div class="total">共计: <span>3</span>条</div>
+	<br>
+	<table border="1">
+		<thead>
+			<tr>
+				<th>id</th>
+				<th>username</th>
+				<th>password</th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody class="tbodyBox">
+			<!-- <tr>
+				<td>1</td>
+				<td>aaa</td>
+				<td>aaa</td>
+				<td><button>编辑</button><button>删除</button></td>
+			</tr>
+			<tr>
+				<td>2</td>
+				<td>bbb</td>
+				<td>bbb</td>
+				<td><button>编辑</button><button>删除</button></td>
+			</tr>
+			<tr>
+				<td>3</td>
+				<td>ccc</td>
+				<td>ccc</td>
+				<td><button>编辑</button><button>删除</button></td>
+			</tr> -->
+		</tbody>
+	</table>
+	<br>
+	插入数据： 
+	<div> 
+		name:<input type="text" class="addName" /> 
+		password:<input type="text" class="addPassword" /> 
+		<input type="button" value="go!" id="add" onclick="add()" /> 
+	</div>
+	<br>
+	修改数据： 
+	<div id="hidden">
+		
+	</div>
+</body>
+<script type="text/javascript" src="js/jquery-3.3.1.js"></script>
+<script type="text/javascript">
+	var localUrl = 'http://192.168.43.123/1011px/testPHP/';
+	function query(){
+		$.ajax({
+	        url: localUrl +'query.php',//发送请求的地址
+	        type: 'get',//请求方式,通常会用到两种：GET,POST。默认是：GET
+	        data: {
+	        	
+	        },//发送到服务器的数据
+	        dataType: 'json',//预期服务器返回的数据类型。
+	        success: function(data){
+	        	console.log(data);
+	        	$(".title").text(data.title);
+	        	$(".total span").text(data.total);
+	        	var trStr = '';
+	        	for (var i = 0; i < data.num.length; i++) {
+	        		trStr += '<tr> <td>'+data.num[i].id+'</td> <td>'+data.num[i].name+'</td> <td>'+data.num[i].password+'</td> <td><button onclick="updata(\''+data.num[i].id+'\',\''+data.num[i].name+'\',\''+data.num[i].password+'\')">编辑</button><button onclick="del('+data.num[i].id+')">删除</button></td> </tr>'};
+	        		$(".tbodyBox").html(trStr);
+	        },//请求成功
+	        error: function(data){
+
+	        },//请求出错
+
+		})
+	}
+	query();
+	//新增
+	function add(){
+		var nameVal = $(".addName").val();
+		var passwordVal = $(".addPassword").val();
+		if (!nameVal) {
+			alert("名字为空");
+		}else if(!passwordVal){
+			alert("password为空");
+		}else{
+			$.ajax({
+		        url: localUrl + 'addTable.php',//发送请求的地址
+		        type: 'get',//请求方式,通常会用到两种：GET,POST。默认是：GET
+		        data: {
+		        	name: nameVal,
+		        	password: passwordVal, 
+		        },//发送到服务器的数据
+		        dataType: 'json',//预期服务器返回的数据类型。
+		        // beforeSend: function(){
+		        // 	$("#add").attr("disabled","disabled");
+		        // },
+		        success: function(data){
+		        	console.log(data);
+
+		        	query();
+		        	alert(data.msg);
+		        },//请求成功
+		        error: function(data){
+		        	alert("错了");
+		        },//请求出错
+		        // complete: function(){
+		        // 	$("#add").removeAttr("disabled");
+	        	// },//请求完成后执行函数
+			})
+		}
+		
+	}
+	//编辑
+	function updata(id,name,password){
+		//alert("id:"+id+"name:"+name+"password:"+password)
+		$("#hidden").html('<lable>name</lable> <input type="text" class="name22" value="'+id+'"> <lable>password</lable> <input type="hidden" class="idID"> <input type="text" class="password22" value="'+password+'"> <input type="button" value="go!" id="subBtn"/>');
+		/*$(".idID").val(id);
+		$(".name22").val(name);
+		$(".password22").val(password);*/
+		$("#subBtn").on("click",function(){
+			var id = $(".idID").val();
+			var nameVal = $(".name22").val();
+			var passwordVal = $(".password22").val();
+			$.ajax({
+		        url: localUrl + 'update.php',//发送请求的地址
+		        type: 'get',//请求方式,通常会用到两种：GET,POST。默认是：GET
+		        data: {
+		        	id: id,
+		        	name: nameVal,
+		        	password: passwordVal, 
+		        },//发送到服务器的数据
+		        dataType: 'json',//预期服务器返回的数据类型。
+		        success: function(data){
+		        	console.log(data);
+
+		        	query();
+		        	alert(data.msg);
+		        },//请求成功
+		        error: function(data){
+
+		        },//请求出错
+
+			})
+		})
+		
+	}
+	//删除
+	function del(id){
+		$.ajax({
+	        url: localUrl + 'delect.php',//发送请求的地址
+	        type: 'get',//请求方式,通常会用到两种：GET,POST。默认是：GET
+	        data: {
+	        	id: id, 
+	        },//发送到服务器的数据
+	        dataType: 'json',//预期服务器返回的数据类型。
+	        success: function(data){
+	        	console.log(data);
+	        	query();
+	        	alert(data.msg);
+	        },//请求成功
+	        error: function(data){
+
+	        },//请求出错
+
+		})
+	}
+</script>
+</html>
